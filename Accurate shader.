@@ -1,0 +1,105 @@
+shader_type canvas_item;
+
+//The magnitude of the field is in black and white.
+
+uniform float Scale = 1;
+uniform vec2 Offset = vec2(0,0);
+
+uniform float AnimationSpeed = 0;
+uniform vec2 PosChargePos = vec2(25,25);
+uniform vec2 Pos2ChargePos = vec2(75,75);
+uniform vec2 Pos3ChargePos = vec2(0,0);
+uniform vec2 Pos4ChargePos = vec2(50,50);
+
+uniform vec2 NegChargePos = vec2(-50,0);
+uniform vec2 Neg2ChargePos = vec2(-100,0);
+uniform vec2 Neg3ChargePos = vec2(0,-100);
+uniform vec2 Neg4ChargePos = vec2(0,-50);
+uniform vec2 Neg5ChargePos = vec2(100,0);
+uniform vec2 Neg6ChargePos = vec2(0,100);
+
+
+uniform float Intensity = 20f;
+
+void vertex()
+{
+	
+	
+}
+
+void fragment()
+{
+	vec2 Charge;
+	float ChargeMagnitude;
+
+	vec2 halfres = SCREEN_PIXEL_SIZE;
+	halfres.x = 1f / (2f * halfres.x);
+	halfres.y = 1f / (2f * halfres.y);
+	
+	vec2 PosChargePos1 = (PosChargePos * Scale* (sin(TIME * AnimationSpeed))) + Offset;
+	vec2 NegChargePos1 = (NegChargePos * Scale * (sin(TIME * AnimationSpeed))) + Offset;
+	vec2 Neg2ChargePos1 = (Neg2ChargePos * Scale * sin(TIME * AnimationSpeed)) + Offset;
+	vec2 Pos2ChargePos1 = (Pos2ChargePos * Scale * sin(TIME * AnimationSpeed)) + Offset;
+	vec2 Neg3ChargePos1 = (Neg3ChargePos * Scale * sin(TIME * AnimationSpeed)) + Offset;
+	vec2 Neg4ChargePos1 = (Neg4ChargePos * Scale * sin(TIME * AnimationSpeed)) + Offset;
+	vec2 Pos3ChargePos1 = (Pos3ChargePos * Scale * sin(TIME * AnimationSpeed)) + Offset;
+	vec2 Pos4ChargePos1 = (Pos4ChargePos * Scale * sin(TIME * AnimationSpeed)) + Offset;
+	vec2 Neg5ChargePos1 = (Neg5ChargePos * Scale * sin(TIME * AnimationSpeed)) + Offset;
+	vec2 Neg6ChargePos1 = (Neg6ChargePos * Scale * sin(TIME * AnimationSpeed)) + Offset;
+	
+	
+	vec2 pixelPlace;
+	pixelPlace.x = FRAGCOORD.x;
+	pixelPlace.y = FRAGCOORD.y;
+	pixelPlace.x -= halfres.x;
+	pixelPlace.y -= halfres.y;
+	
+	vec2 D1, D2, D3, D4, D5, D6, D7, D8, D9, D10;
+	D1 = pixelPlace - PosChargePos1;
+	D2 = pixelPlace - Pos2ChargePos1;
+	D3 = pixelPlace - Pos3ChargePos1;
+	D4 = pixelPlace - Pos4ChargePos1;
+	
+	D5 = pixelPlace - NegChargePos1;
+	D6 = pixelPlace - Neg2ChargePos1;
+	D7 = pixelPlace - Neg3ChargePos1;
+	D8 = pixelPlace - Neg4ChargePos1;
+	D9 = pixelPlace - Neg5ChargePos1;
+	D10 = pixelPlace - Neg6ChargePos1;
+	
+	
+	D1 *= 1f / (distance(pixelPlace,PosChargePos1) * distance(pixelPlace,PosChargePos1));
+	D2 *= 1f / (distance(pixelPlace,Pos2ChargePos1) * distance(pixelPlace,Pos2ChargePos1));
+	D3 *= 1f / (distance(pixelPlace,Pos3ChargePos1) * distance(pixelPlace,Pos3ChargePos1));
+	D4 *= 1f / (distance(pixelPlace,Pos4ChargePos1) * distance(pixelPlace,Pos4ChargePos1));
+	D5 *= 1f / (distance(pixelPlace,NegChargePos1) * distance(pixelPlace,NegChargePos1));
+	D6 *= 1f / (distance(pixelPlace,Neg2ChargePos1) * distance(pixelPlace,Neg2ChargePos1));
+	D7 *= 1f / (distance(pixelPlace,Neg3ChargePos1) * distance(pixelPlace,Neg3ChargePos1));
+	D8 *= 1f / (distance(pixelPlace,Neg4ChargePos1) * distance(pixelPlace,Neg4ChargePos1));
+	D9 *= 1f / (distance(pixelPlace,Neg5ChargePos1) * distance(pixelPlace,Neg5ChargePos1));
+	D10 *= 1f / (distance(pixelPlace,Neg6ChargePos1) * distance(pixelPlace,Neg6ChargePos1));
+	
+	Charge = D1 + D2 + D3 + D4 - D5 - D6 - D7 - D8 - D9 - D10;
+	ChargeMagnitude = distance(Charge, vec2(0,0));
+	
+	
+	COLOR.b = COLOR.r = COLOR.g = 0f;
+	
+	if(mod(ChargeMagnitude,0.1f) <= .01f)
+	{
+		COLOR.b = COLOR.r = COLOR.g = ChargeMagnitude * Intensity;
+	}
+	else if(mod(ChargeMagnitude,0.01f) <= .001f)
+	{
+		COLOR.b = COLOR.r = COLOR.g = ChargeMagnitude * Intensity;
+	}
+	
+/*
+	COLOR.b = abs(Charge.x) * Intensity;
+	COLOR.r = abs(Charge.y) * Intensity;
+	COLOR.g = Charge.x + Charge.y;
+	COLOR.g *= Intensity;
+	*/
+
+}
+
