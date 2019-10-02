@@ -1,3 +1,7 @@
+
+
+//Note, this shader is completely wrong, but still very pretty.
+
 shader_type canvas_item;
 
 uniform float Scale = 1;
